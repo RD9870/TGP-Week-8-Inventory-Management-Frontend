@@ -32,8 +32,6 @@ function Login() {
       const token = response.data.access_token;
       localStorage.setItem("auth_token", token);
 
-      alert("تم تسجيل الدخول بنجاح!");
-      // هنا يمكنك التوجيه لصفحة الـ Dashboard مثلاً:
       // window.location.href = '/dashboard';
     } catch (err: any) {
       // معالجة الأخطاء القادمة من الـ AuthController الذي كتبته
