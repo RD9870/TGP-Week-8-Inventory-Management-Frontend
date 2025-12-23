@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
-import axios from "axios";
+import api from "../api";
 
 // 1. تعريف شكل البيانات القادمة من Laravel (Back-end)
 interface LoginResponse {
@@ -23,7 +23,7 @@ function Login() {
     try {
       // إرسال الطلب لـ Laravel
       // تأكد من تغيير الرابط لرابط السيرفر الخاص بك
-      const response = await axios.post<LoginResponse>("/api/login", {
+      const response = await api.post<LoginResponse>("/login", {
         username: username,
         password: password,
       });
