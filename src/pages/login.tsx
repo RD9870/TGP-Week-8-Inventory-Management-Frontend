@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import api from "../api";
+import { useNavigate } from "react-router-dom";
 
 // 1. تعريف شكل البيانات القادمة من Laravel (Back-end)
 interface LoginResponse {
@@ -13,6 +14,7 @@ function Login() {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // 3. دالة إرسال البيانات للسيرفر
   const handleSubmit = async (e: FormEvent) => {
@@ -32,6 +34,9 @@ function Login() {
       const token = response.data.access_token;
       localStorage.setItem("auth_token", token);
 
+      // alert("تم تسجيل الدخول بنجاح!");
+      // هنا يمكنك التوجيه لصفحة الـ Dashboard مثلاً:
+      navigate("/dashboard");
       // window.location.href = '/dashboard';
     } catch (err: any) {
       // معالجة الأخطاء القادمة من الـ AuthController الذي كتبته
