@@ -38,7 +38,7 @@ function Login() {
     } catch (err: any) {
       // معالجة الأخطاء القادمة من الـ AuthController الذي كتبته
       if (err.response && err.response.status === 401) {
-        setError(err.response.data.message); // سيعرض "wrong username" أو "wrong password"
+        setError(err.response.data.message);
       } else {
         setError("حدث خطأ في الاتصال بالسيرفر، حاول لاحقاً");
       }
