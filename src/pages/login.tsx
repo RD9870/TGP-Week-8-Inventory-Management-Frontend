@@ -32,7 +32,7 @@ function Login() {
 
       // في حال النجاح: تخزين الـ Token
       const token = response.data.access_token;
-      localStorage.setItem("auth_token", token);
+      localStorage.setItem("token", token);
 
       // alert("تم تسجيل الدخول بنجاح!");
       // هنا يمكنك التوجيه لصفحة الـ Dashboard مثلاً:
