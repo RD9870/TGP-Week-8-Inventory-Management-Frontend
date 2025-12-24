@@ -36,7 +36,7 @@ function Login() {
 
       // alert("تم تسجيل الدخول بنجاح!");
       // هنا يمكنك التوجيه لصفحة الـ Dashboard مثلاً:
-      navigate("/dashboard");
+      navigate("/receipt");
       // window.location.href = '/dashboard';
     } catch (err: any) {
       // معالجة الأخطاء القادمة من الـ AuthController الذي كتبته
