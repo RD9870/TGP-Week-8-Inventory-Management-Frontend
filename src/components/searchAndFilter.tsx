@@ -95,8 +95,7 @@ function SearchAndFilter({
                 setInputValue(e.target.value)
               }
               placeholder="Search products..."
-              className="w-full bg-transparent border-none py-1 px-3 text-sm focus:ring-0 dark:text-white placeholder:text-slate-500"
-            />
+className="w-full bg-transparent border-none py-1 px-3 text-sm focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-500"            />
             <button
               onClick={handleSubmit}
               className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] uppercase tracking-wider font-bold px-4 py-1.5 rounded-full transition-colors"
@@ -203,3 +202,4 @@ function SearchAndFilter({
 }
 
 export default SearchAndFilter;
+
