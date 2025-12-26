@@ -24,15 +24,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.clear(); // مسح كل البيانات عند أي خطأ 401
+      localStorage.clear(); 
       
-      // التوجيه فقط إذا لم يكن المستخدم في صفحة تسجيل الدخول أصلاً
       if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
         window.location.href = "/login";
       }
     }
-    return Promise.reject(error); // هذا السطر هو الأهم لضمان عمل الـ catch في صفحة Login
+    return Promise.reject(error); 
   }
 );
+
 
 export default api;
