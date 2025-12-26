@@ -1,49 +1,57 @@
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-// 1. تعريف شكل البيانات القادمة من Laravel (Back-end)
 interface LoginResponse {
   access_token: string;
+}
+
+interface UserInfoResponse {
   type: string;
 }
 
 function Login() {
-  // 2. تعريف الـ States مع تحديد الأنواع (TypeScript)
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // 3. دالة إرسال البيانات للسيرفر
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      // إرسال الطلب لـ Laravel
-      // تأكد من تغيير الرابط لرابط السيرفر الخاص بك
       const response = await api.post<LoginResponse>("/login", {
         username: username,
         password: password,
       });
 
-      // في حال النجاح: تخزين الـ Token
-      const token = response.data.access_token;
-      localStorage.setItem("token", token);
+      const token = response.data?.access_token;
 
-      // alert("تم تسجيل الدخول بنجاح!");
-      // هنا يمكنك التوجيه لصفحة الـ Dashboard مثلاً:
-      navigate("/dashboard");
-      // window.location.href = '/dashboard';
+      if (token) {
+        localStorage.setItem("token", token);
+        const userInfo = await api.get<UserInfoResponse>("/user");
+        const usertype = userInfo.data.type;
+        localStorage.setItem("user_type", usertype);
+        toast.success("Welcome back!");
+
+        if (usertype === "cashier") {
+          navigate("/receipt");
+        } else {
+          navigate("/dashboard");
+        }
+      }
     } catch (err: any) {
-      // معالجة الأخطاء القادمة من الـ AuthController الذي كتبته
+      localStorage.clear();
       if (err.response && err.response.status === 401) {
-        setError(err.response.data.message);
+        setError("Invalid username or password. Please try again.");
+        toast.error("Access Denied");
       } else {
-        setError("حدث خطأ في الاتصال بالسيرفر، حاول لاحقاً");
+        setError("Something went wrong. Please check your connection.");
+        toast.error("Login failed");
       }
     } finally {
       setLoading(false);
@@ -53,18 +61,12 @@ function Login() {
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-          alt="Your Company"
-          className="mx-auto h-10 w-auto"
-        />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
           Sign in to your account
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {/* أضفنا handleSubmit هنا */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -76,46 +78,40 @@ function Login() {
             <div className="mt-2">
               <input
                 id="username"
-                type="text" // تم التغيير لـ text لأنك تستخدم username
-                name="username"
+                type="text"
                 required
                 value={username}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setUsername(e.target.value)
-                }
+                onChange={(e) => setUsername(e.target.value)}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                placeholder="Your username"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm/6 font-medium text-gray-100"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Password
+            </label>
             <div className="mt-2">
               <input
                 id="password"
                 type="password"
-                name="password"
                 required
                 value={password}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
-                autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                placeholder="••••••••"
               />
             </div>
           </div>
 
-          {/* عرض رسالة الخطأ إذا وجدت */}
           {error && (
-            <div className="text-red-400 text-sm font-medium mt-2">{error}</div>
+            <div className="text-red-400 text-sm font-medium mt-2 bg-red-400/10 p-3 rounded border border-red-400/20">
+              {error}
+            </div>
           )}
 
           <div>
@@ -126,7 +122,7 @@ function Login() {
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Verifying..." : "Sign in"}
             </button>
           </div>
         </form>

@@ -1,44 +1,37 @@
 import React from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
 
 interface MetricCardProps {
   title: string;
   value: string | number;
-  change?: number;
-  icon?: React.ReactNode;
-  trend?: "up" | "down";
+  icon: React.ReactNode;
+  onClick?: () => void;
 }
 
-function MetricCard({ title, value, change, icon, trend }: MetricCardProps) {
-  const changeColor =
-    trend === "up"
-      ? "text-green-600"
-      : trend === "down"
-      ? "text-red-600"
-      : "text-gray-600";
-  const ChangeIcon =
-    trend === "up" ? ArrowUp : trend === "down" ? ArrowDown : null;
-
+function MetricCard({ title, value, icon, onClick }: MetricCardProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6 relative">
-      {icon && (
-        <div className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400">
-          {icon}
-        </div>
-      )}
-      <p className="text-xs md:text-sm font-medium text-gray-600">{title}</p>
-      <p className="text-2xl md:text-3xl font-bold text-gray-900 mt-2">
-        {value}
-      </p>
-      {change !== undefined && (
-        <div className={`flex items-center gap-1 mt-2 ${changeColor}`}>
-          {ChangeIcon && <ChangeIcon size={16} />}
-          <span className="text-sm font-medium">
-            {change > 0 ? "+" : ""}
-            {change}%
-          </span>
-        </div>
-      )}
+    <div
+      onClick={onClick}
+      className={`bg-slate-900 rounded-2xl border border-slate-800 p-5 md:p-6 relative transition-all duration-300 shadow-xl min-h-35 flex flex-col justify-between
+        ${
+          onClick
+            ? "cursor-pointer hover:bg-slate-800/80 hover:border-indigo-500/50 active:scale-95"
+            : ""
+        }`}
+    >
+      {icon && <div className="absolute top-5 right-5">{icon}</div>}
+      <div>
+        <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-[0.15em] mb-2">
+          {title}
+        </p>
+
+        <p className="text-lg md:text-xl font-black text-white leading-tight pr-12 wrap-break-word">
+          {value}
+        </p>
+      </div>
+
+      <div className="mt-4 text-[9px] text-slate-600 font-bold uppercase tracking-wider">
+        {onClick ? "● Click for details" : "● Live system"}
+      </div>
     </div>
   );
 }

@@ -4,28 +4,28 @@ import Sidebar from "./components/layout/Sidebar";
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import { Route, Routes, useLocation } from "react-router-dom";
+import ReceiptForm from "./pages/receiot";
+import ProfitDetails from "./pages/profitDetails";
+import UsersPage from "./pages/users";
+import CategoriesPage from "./pages/Categories";
+import ProductsPage from "./pages/Products";
 
 function AppContent() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const navItems = [
-    { id: "home", label: "Home", path: "/" },
+    { id: "dashboard", label: "Dashboard", path: "/dashboard" },
     { id: "users", label: "Users", path: "/users" },
-    { id: "profile", label: "Profile", path: "/profile" },
-    {
-      id: "settings",
-      label: "Settings",
-      // icon: <Settings />,
-      path: "/settings",
-    },
+    { id: "products", label: "Products", path: "/products" },
+    { id: "Categories", label: "Categories", path: "/categories" },
+    { id: "Profits", label: "Profits", path: "/profitDetails" },
   ];
 
   const pageTitles: { [key: string]: string } = {
-    "/": "Home",
+    "/dashboard": "Dashboard",
     "/users": "Users",
-    "/profile": "Profile",
-    "/settings": "Settings",
+    "/products": "Products",
   };
 
   const pageTitle = pageTitles[location.pathname] || "Dashboard";
@@ -39,14 +39,14 @@ function AppContent() {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
       <main className="md:ml-60 flex-1 w-full">
-        <Header
-          title={pageTitle}
-          userName="John Doe"
-          userAvatar="https://i.pravatar.cc/150?img=1"
-          onMenuClick={() => setIsMobileMenuOpen(true)}
-        />
+        <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="profitDetails" element={<ProfitDetails />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="Categories" element={<CategoriesPage />} />
+          <Route path="Products" element={<ProductsPage />} />
+
           {/* <Route path="/users" element={<UserListPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} /> */}
@@ -61,6 +61,8 @@ function App() {
     <Routes>
       <Route path="" element={<Login />} />
       <Route path="login" element={<Login />} />
+
+      <Route path="receipt" element={<ReceiptForm />} />
       {/* <Route path="dashboard" element={<Dashboard />}></Route> */}
       <Route path="*" element={<AppContent />} />
     </Routes>

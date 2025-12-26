@@ -1,13 +1,22 @@
-import MetricCard from "../components/ui/MetricCard";
 import { ThumbsDown, ShoppingCart, TrendingUp, Medal } from "lucide-react";
-import LineChart from "../components/charts/LineChart";
+import MetricCard from "../components/ui/MetricCard";
 import api from "../api";
 import { useEffect, useState } from "react";
+import ProductsDetailsSection from "../components/top_5_section";
+import { useNavigate } from "react-router-dom";
 
 interface ProductSale {
   product_id: number;
   name: string;
   total_quantity: string;
+  price: number;
+  image: string;
+}
+
+interface LowStockProduct {
+  id: number;
+  name: string;
+  image: string;
 }
 
 interface ProductsOverviewResponse {
@@ -21,51 +30,42 @@ interface MonthlyRateResponse {
   total_profit: number;
 }
 
-interface lowStockCountResponse {
+interface lowStockProductsResponse {
   "number-of-low-stock-items": number;
+  items: LowStockProduct[];
 }
 
 function Dashboard() {
+  const navigate = useNavigate();
+
+  const userType = localStorage.getItem("user_type");
+
   const [worstAndBestSellers, setworstAndBestSellers] =
     useState<ProductsOverviewResponse | null>(null);
   const [MonthlyProfit, setMonthlyProfit] =
     useState<MonthlyRateResponse | null>(null);
-  const [lowStockCount, setlowStockCount] =
-    useState<lowStockCountResponse | null>(null);
+  const [lowStockProducts, setLowStockProducts] =
+    useState<lowStockProductsResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const chartData = [
-    { name: "Jan", value: 400 },
-    { name: "Feb", value: 300 },
-    { name: "Mar", value: 600 },
-    { name: "Apr", value: 800 },
-    { name: "May", value: 500 },
-    { name: "Jun", value: 700 },
-  ];
+
+  const [showTopProducts, setShowTopProducts] = useState(false);
+  const [showWorstProducts, setShowWorstProducts] = useState(false);
+  const [showLowStockProducts, setShowLowStockProducts] = useState(false);
 
   const getStackedData = async () => {
     try {
       setLoading(true);
-      const worstAndBestResponse = await api.get<ProductsOverviewResponse>(
-        "/products/overview/1"
-      );
-      setworstAndBestSellers(worstAndBestResponse.data);
-      console.log(worstAndBestResponse.data);
+      const [ovRes, profitRes, stockRes] = await Promise.all([
+        api.get<ProductsOverviewResponse>("/products/overview/5"),
+        api.get<MonthlyRateResponse>("/monthly-rate"),
+        api.get<lowStockProductsResponse>("/lowStockCount"),
+      ]);
 
-      const MonthlyProfitResponse = await api.get<MonthlyRateResponse>(
-        "/monthly-rate"
-      );
-      setMonthlyProfit(MonthlyProfitResponse.data);
-      console.log(MonthlyProfitResponse.data);
-
-      const lowStockCountResponse = await api.get<lowStockCountResponse>(
-        "/lowStockCount"
-      );
-      setlowStockCount(lowStockCountResponse.data);
-      console.log(MonthlyProfitResponse.data);
+      setworstAndBestSellers(ovRes.data);
+      setMonthlyProfit(profitRes.data);
+      setLowStockProducts(stockRes.data);
     } catch (err: any) {
-      if (err.response && err.response.status === 401) {
-        console.log(err.response.data.message);
-      }
+      console.error("Error fetching data", err);
     } finally {
       setLoading(false);
     }
@@ -76,51 +76,133 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="p-4 md:p-6">
-      <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
-        Dashboard
-      </h1>
+    <div className="min-h-screen bg-[#0f172a] p-4 md:p-8 font-sans text-slate-100">
+      <div className="max-w-7xl mx-auto mb-10">
+        <h1 className="text-3xl font-extrabold text-white">
+          Dashboard Overview
+        </h1>
+        <p className="text-slate-400 mt-2">
+          Monitor your business performance.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Best seller"
           value={
             loading
               ? "Loading..."
-              : worstAndBestSellers?.["best sellers"]?.[0]?.name!
+              : worstAndBestSellers?.["best sellers"]?.[0]?.name || "N/A"
           }
-          icon={<Medal size={24} />}
+          icon={
+            <Medal
+              size={26}
+              className={
+                showTopProducts
+                  ? "text-yellow-400 fill-yellow-400/20"
+                  : "text-yellow-500/70"
+              }
+            />
+          }
+          onClick={() => {
+            setShowTopProducts(!showTopProducts);
+            setShowWorstProducts(false);
+            setShowLowStockProducts(false);
+          }}
         />
 
         <MetricCard
-          title="Worset seller"
+          title="Worst seller"
           value={
             loading
               ? "Loading..."
-              : worstAndBestSellers?.["worst sellers"]?.[0]?.name!
+              : worstAndBestSellers?.["worst sellers"]?.[0]?.name || "N/A"
           }
-          icon={<ThumbsDown size={24} />}
+          icon={
+            <ThumbsDown
+              size={26}
+              className={
+                showWorstProducts
+                  ? "text-rose-500 fill-rose-500/20"
+                  : "text-rose-500/70"
+              }
+            />
+          }
+          onClick={() => {
+            setShowWorstProducts(!showWorstProducts);
+            setShowTopProducts(false);
+            setShowLowStockProducts(false);
+          }}
         />
 
         <MetricCard
           title="Low stock items"
           value={
             loading
-              ? "Loading..."
-              : lowStockCount?.["number-of-low-stock-items"]!
+              ? "..."
+              : lowStockProducts?.["number-of-low-stock-items"] || 0
           }
-          icon={<ShoppingCart size={24} />}
+          icon={
+            <ShoppingCart
+              size={26}
+              className={
+                showLowStockProducts
+                  ? "text-orange-500 fill-orange-500/20"
+                  : "text-orange-500/70"
+              }
+            />
+          }
+          onClick={() => {
+            setShowLowStockProducts(!showLowStockProducts);
+            setShowWorstProducts(false);
+            setShowTopProducts(false);
+          }}
         />
 
         <MetricCard
-          title="Profit"
-          value={loading ? "Loading..." : MonthlyProfit?.total_profit!}
-          icon={<TrendingUp size={24} />}
+          title="Monthly Profit"
+          value={
+            loading
+              ? "..."
+              : `$${MonthlyProfit?.total_profit?.toLocaleString() || 0}`
+          }
+          icon={<TrendingUp size={26} className="text-emerald-400" />}
+          onClick={
+            userType === "admin" ? () => navigate("/profitDetails") : undefined
+          }
         />
       </div>
 
-      <div className="mt-6">
-        <LineChart data={chartData} title="Monthly Revenue" />
+      <div className="max-w-7xl mx-auto mt-10 space-y-6">
+        {showTopProducts && worstAndBestSellers?.["best sellers"] && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <ProductsDetailsSection
+              type="best"
+              products={worstAndBestSellers["best sellers"]}
+              onClose={() => setShowTopProducts(false)}
+            />
+          </div>
+        )}
+
+        {showWorstProducts && worstAndBestSellers?.["worst sellers"] && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <ProductsDetailsSection
+              type="worst"
+              products={worstAndBestSellers["worst sellers"]}
+              onClose={() => setShowWorstProducts(false)}
+            />
+          </div>
+        )}
+
+        {showLowStockProducts && lowStockProducts?.items && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <ProductsDetailsSection
+              type="low-stock"
+              products={lowStockProducts.items}
+              onClose={() => setShowLowStockProducts(false)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
