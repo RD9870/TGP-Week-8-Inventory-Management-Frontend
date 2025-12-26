@@ -1,24 +1,38 @@
+// api.ts
 import axios from "axios";
 
-// إنشاء نسخة (Instance) من Axios بإعدادات افتراضية
 const api = axios.create({
-  // الرابط الأساسي للسيرفر (Laravel)
   baseURL: "http://localhost:8000/api",
-
-  // الإعدادات التي سيتم إرسالها مع كل طلب تلقائياً
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
 });
 
-// (اختياري) إضافة "Interceptor" لإرسال التوكن تلقائياً إذا كان موجوداً
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // جلب التوكن من التخزين المحلي
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.clear(); // مسح كل البيانات عند أي خطأ 401
+      
+      // التوجيه فقط إذا لم يكن المستخدم في صفحة تسجيل الدخول أصلاً
+      if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error); // هذا السطر هو الأهم لضمان عمل الـ catch في صفحة Login
   }
-  return config;
-});
+);
 
 export default api;
