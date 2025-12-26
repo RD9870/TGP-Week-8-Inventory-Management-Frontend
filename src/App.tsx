@@ -22,14 +22,6 @@ function AppContent() {
     { id: "Profits", label: "Profits", path: "/profitDetails" },
   ];
 
-  const pageTitles: { [key: string]: string } = {
-    "/dashboard": "Dashboard",
-    "/users": "Users",
-    "/products": "Products",
-  };
-
-  const pageTitle = pageTitles[location.pathname] || "Dashboard";
-
   return (
     <div className="flex">
       <Sidebar
