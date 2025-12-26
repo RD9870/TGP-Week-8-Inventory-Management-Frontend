@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "./components/layout/Header";
 import Sidebar from "./components/layout/Sidebar";
-import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ReceiptForm from "./pages/receiot";
@@ -9,6 +8,7 @@ import ProfitDetails from "./pages/profitDetails";
 import UsersPage from "./pages/users";
 import CategoriesPage from "./pages/Categories";
 import ProductsPage from "./pages/Products";
+import Dashboard from "./pages/dashboard";
 
 function AppContent() {
   const location = useLocation();
