@@ -39,3 +39,4 @@ npm run dev
 ## ❗ Note
 
 Please note that this repo only contains the frontend of the system, you can clone the backend from **[Here](https://github.com/RD9870/TGP-Week-8-Inventory-Management-Backend)**
+
