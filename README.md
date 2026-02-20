@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+<p align="center"><a href="#" target="_blank"><img width="700" height="350" alt="Inventory_Management" src="https://github.com/user-attachments/assets/fc2d7c1b-a0be-440f-b6b2-a0f9708ac519" />
+</a></p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## 📝 Overview
+This is the frontend of a collabrative inventory management website with Role-Based Access Control, where cashiers are allowed to issue receipts, managers are allowed to add and edit products, view statistics, search and filter products and also add and edit categories and subcategories. it also admins are allowed to do the manager tasks plus delete products and categories and view profits in detail.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Static Badge](https://img.shields.io/badge/-typescript-3178C6?style=plastic&logo=typescript&labelColor=5b5b5b)
+![Static Badge](https://img.shields.io/badge/-vite-9135FF?style=plastic&logo=vite&labelColor=5b5b5b)
+![Static Badge](https://img.shields.io/badge/-react-61DAFB?style=plastic&logo=react&labelColor=5b5b5b)
+![Static Badge](https://img.shields.io/badge/-tailwindcss-06B6D4?style=plastic&logo=tailwindcss&labelColor=5b5b5b)
 
-## React Compiler
+## 🔓 Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Clone the repo to your local device and open the project folder in your IDE. 
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/RD9870/TGP-Week-8-Inventory-Management-Frontend.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install all the needed packages and dependencies.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+3. Run the development server
+
+```bash
+npm run dev
+```
+
+## 👥 Contributers
+
+ **[Reem Denini](https://github.com/RD9870)**
+ <br>
+ **[Najah Layas](https://github.com/Najahlayas)**
+
+## ❗ Note
+
+Please note that this repo only contains the frontend of the system, you can clone the backend from **[Here](https://github.com/RD9870/TGP-Week-8-Inventory-Management-Backend)**
